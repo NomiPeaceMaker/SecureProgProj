@@ -44,7 +44,6 @@ module.exports.register = async (req, res, next) => {
 
     // generate 16 bytes of random data, keeping it same so it is easy to decrypt
     const initVector = "0000000000000000";
-    console.log("Data to protect: ", privateKey.toString("hex"));
     const message = privateKey;
     const Securitykey = password;
 
@@ -63,7 +62,8 @@ module.exports.register = async (req, res, next) => {
       publicKey,
       encryptedPrivateKey,
     });
-    delete user.password;
+    delete user.password; // This should not be deleted on the local React app side so that it can be used
+    // to decrypt the private key
     return res.json({ status: true, user });
   } catch (ex) {
     next(ex);
