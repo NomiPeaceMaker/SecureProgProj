@@ -61,8 +61,8 @@ const Register = () => {
     } else if(username.length < 3){
       toast.error("Username must be atleast 3 characters.", toastOptions);
       return false;
-    } else if(password.length < 4){
-      toast.error("Password must be atleast 4 characters.", toastOptions);
+    } else if(password.length == 15 ){
+      toast.error("Password must be 16 characters.", toastOptions);
       return false;
     } else  if(email === "") {
       toast.error("Email is required", toastOptions);

@@ -21,6 +21,8 @@ export default function ChatInput({handleSendMsg}) {
     const sendChat = (e)=>{
         e.preventDefault();
         if(msg.length>0){
+            // Encrypt message before sending
+            // Use receivers public key to encrypt
             handleSendMsg(msg);
             setMsg('');
         }

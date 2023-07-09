@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema({
     avatarImage: {
         type: String,
         default: ""
+    },
+    publicKey: {
+        type: String,
+        default: "",
+    },
+    encryptedPrivateKey: {
+        type: String,
+        default: "",
     }
 });
 
