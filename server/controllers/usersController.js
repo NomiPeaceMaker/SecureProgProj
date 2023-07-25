@@ -44,13 +44,12 @@ module.exports.register = async (req, res, next) => {
 
     // generate 16 bytes of random data, keeping it same so it is easy to decrypt
     const initVector = "0000000000000000";
-    const message = privateKey;
     const Securitykey = password;
 
     // the cipher function
     const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
 
-    let encryptedData = cipher.update(message, "utf-8", "hex");
+    let encryptedData = cipher.update(privateKey, "utf-8", "hex");
 
     encryptedData += cipher.final("hex");
     const encryptedPrivateKey = encryptedData;
@@ -95,7 +94,7 @@ module.exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({
       _id: { $ne: req.params.id },
-    }).select(["email", "username", "avatarImage", "_id"]);
+    }).select(["email", "username", "avatarImage", "_id", "publicKey"]);
     return res.json(users);
   } catch (err) {
     next(err);

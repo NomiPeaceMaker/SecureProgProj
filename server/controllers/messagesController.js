@@ -2,10 +2,16 @@ const messageModel = require("../models/messageModel");
 
 module.exports.addMessage = async (req, res, next) => {
   try {
-    const { from, to, message } = req.body;
+    const { from, to, message, keys } = req.body;
+
+    encryptedMessage = message;
     const data = await messageModel.create({
       message: {
-        text: message,
+        text: encryptedMessage,
+      },
+      keys: {
+        sender: keys.sender,
+        receiver: keys.receiver,
       },
       users: [from, to],
       sender: from,
@@ -37,6 +43,7 @@ module.exports.getAllMessage = async (req, res, next) => {
       return {
         fromSelf: msg.sender.toString() === from,
         message: msg.message.text,
+        keys: msg.keys,
       };
     });
 

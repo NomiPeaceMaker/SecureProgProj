@@ -41,6 +41,7 @@ const Login = () => {
     if(data.status === false){
       toast.error(data.msg, toastOptions);
     } else {
+      data.user = {... data.user, password}
       localStorage.setItem('chat-app-user', JSON.stringify(data.user));
     }
     navigate("/");
