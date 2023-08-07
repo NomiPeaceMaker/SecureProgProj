@@ -77,7 +77,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
       }
     };
     fetchData();
-  }, [currentChat, messages]);
+  }, [currentChat, arrivalMessage]);
 
   const handleSendMsg = async (msg) => {
     // Generating random string:
@@ -94,7 +94,6 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
     var encryptSender = new JSEncrypt();
     var publicKeyReceiver = currentChat.publicKey;
     var publicKeySender = currentUser.publicKey;
-    var privateKey = currentUser.encryptedPrivateKey; // we might not even need this
 
     // Assign our encryptor to utilize the public key.
     encryptReceiver.setPublicKey(publicKeyReceiver);
