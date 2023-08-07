@@ -12,7 +12,6 @@ const Register = () => {
 
   const [values, setValues] = useState({
     username: "",
-    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -28,10 +27,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (handleValidation()) {
-      const { password, username, email } = values;
+      const { password, username } = values;
       const { data } = await axios.post(registerRoute, {
         username,
-        email,
         password,
       });
       if (data.status === false) {
@@ -59,18 +57,15 @@ const Register = () => {
   };
 
   const handleValidation = () => {
-    const { password, confirmPassword, username, email } = values;
+    const { password, confirmPassword, username } = values;
     if (password !== confirmPassword) {
       toast.error("Enter correct Confirm Password!", toastOptions);
       return false;
     } else if (username.length < 3) {
       toast.error("Username must be atleast 3 characters.", toastOptions);
       return false;
-    } else if (password.length == 15) {
-      toast.error("Password must be 16 characters.", toastOptions);
-      return false;
-    } else if (email === "") {
-      toast.error("Email is required", toastOptions);
+    } else if (password.length < 8) {
+      toast.error("Password must be >=8 characters.", toastOptions);
       return false;
     }
     return true;
@@ -88,12 +83,6 @@ const Register = () => {
             type="text"
             placeholder="Username"
             name="username"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
             onChange={(e) => handleChange(e)}
           />
           <input
