@@ -6,7 +6,7 @@ import axios from "axios";
 import { getAllMessagesRoute, sendMessageRoute } from "../utils/APIRoutes";
 import { v4 as uuidv4 } from "uuid";
 import { JSEncrypt } from "jsencrypt";
-import { AES, enc, pad, mode } from "crypto-js";
+import { AES, enc, pad, mode, MD5 } from "crypto-js";
 
 export default function ChatContainer({ currentChat, currentUser, socket }) {
   const [messages, setMessages] = useState([]);
@@ -49,7 +49,9 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
 
         // Decrypt private key with the password
         const cipherTextHex = currentUser.encryptedPrivateKey;
-        const secretKey = currentUser.password;
+        let secretKey =
+          currentUser.password + MD5(currentUser.password).toString();
+        secretKey = secretKey.slice(0, 16);
         const iv = "0000000000000000";
 
         const privateKey = decryptAES(cipherTextHex, secretKey, iv);
