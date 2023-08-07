@@ -77,7 +77,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
       }
     };
     fetchData();
-  }, [currentChat]);
+  }, [currentChat, messages]);
 
   const handleSendMsg = async (msg) => {
     // Generating random string:
