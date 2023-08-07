@@ -22,16 +22,13 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
     let longPassword =
       password + crypto.createHash("md5").update(password).digest("hex");
     longPassword = longPassword.slice(0, 16);
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck)
       return res.json({ msg: "Username already used", status: false });
-    const emailCheck = await User.findOne({ email });
-    if (emailCheck)
-      return res.json({ msg: "Email already used", status: false });
     const hashedPassword = await bcrypt.hash(longPassword, 10);
 
     const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -60,7 +57,6 @@ module.exports.register = async (req, res, next) => {
     const encryptedPrivateKey = encryptedData;
 
     const user = await User.create({
-      email,
       username,
       password: hashedPassword,
       publicKey,
@@ -99,7 +95,7 @@ module.exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({
       _id: { $ne: req.params.id },
-    }).select(["email", "username", "avatarImage", "_id", "publicKey"]);
+    }).select(["username", "avatarImage", "_id", "publicKey"]);
     return res.json(users);
   } catch (err) {
     next(err);
