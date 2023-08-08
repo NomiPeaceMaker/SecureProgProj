@@ -1,104 +1,104 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios"
-import { loginRoute } from '../utils/APIRoutes';
+import axios from "axios";
+import { loginRoute } from "../utils/APIRoutes";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
     username: "",
-    password: ""
+    password: "",
   });
 
   const [loginAttempts, setLoginAttempts] = useState(3);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
 
-
   const toastOptions = {
-    position: 'bottom-right',
+    position: "bottom-right",
     autoClose: 8000,
     pauseOnHover: true,
     draggable: true,
-    theme: "dark"
+    theme: "dark",
   };
 
   useEffect(() => {
-    if(localStorage.getItem('chat-app-user')) {
-      navigate('/');
+    if (localStorage.getItem("chat-app-user")) {
+      navigate("/");
     }
 
-    const storedLoginAttempts = localStorage.getItem('loginAttempts');
+    const storedLoginAttempts = localStorage.getItem("loginAttempts");
     if (storedLoginAttempts !== null) {
       setLoginAttempts(Number(storedLoginAttempts));
     }
-
-  },);
-  
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   if( handleValidation()){
-    const {password,  username} = values;
-    const {data} = await axios.post(loginRoute, {
-      username,
-      password
-    });
-    if(data.status === false){
-      toast.error(data.msg, toastOptions);
+    if (handleValidation()) {
+      const { password, username } = values;
+      const { data } = await axios.post(loginRoute, {
+        username,
+        password,
+      });
+      if (data.status === false) {
+        toast.error(data.msg, toastOptions);
 
-      setLoginAttempts(loginAttempts-1);
-      localStorage.setItem('loginAttempts',loginAttempts -1 )
-
-    } else {
-      data.user = {... data.user, password}
-      localStorage.setItem('chat-app-user', JSON.stringify(data.user));
+        setLoginAttempts(loginAttempts - 1);
+        localStorage.setItem("loginAttempts", loginAttempts - 1);
+      } else {
+        data.user = { ...data.user, password };
+        localStorage.setItem("chat-app-user", JSON.stringify(data.user));
+      }
+      navigate("/");
     }
-    navigate("/");
-   };
-   
   };
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleValidation = () =>{
-    const {password, username} = values;
+  const handleValidation = () => {
+    const { password, username } = values;
 
     if (isFormDisabled) {
-      toast.error("You are currently locked out. Please wait and try again later.", toastOptions);
+      toast.error(
+        "You are currently locked out. Please wait and try again later.",
+        toastOptions
+      );
       return false;
     }
 
-    if(password ===  ""){
+    if (password === "") {
       toast.error("Password required!", toastOptions);
       return false;
-    } else if(username.length === ""){
+    } else if (username.length === "") {
       toast.error("Username required", toastOptions);
       return false;
-    } 
+    }
 
     if (loginAttempts === 0) {
-      setIsFormDisabled(true)   
-      toast.error("You have reached the maximum number of login attempts and locked out for 5 minutes.", toastOptions);
+      setIsFormDisabled(true);
+      toast.error(
+        "You have reached the maximum number of login attempts and locked out for 5 minutes.",
+        toastOptions
+      );
       setTimeout(timeoutHandler, 60000);
       return false;
     }
 
     return true;
-    }
-  
-    const timeoutHandler = () => {
-      console.log("ece")
-      setIsFormDisabled(false); // Unlock after timeout
-      localStorage.setItem('loginAttempts', 3);
+  };
 
-    };
+  const timeoutHandler = () => {
+    console.log("ece");
+    setIsFormDisabled(false); // Unlock after timeout
+    localStorage.setItem("loginAttempts", 3);
+  };
 
   return (
     <>
@@ -108,17 +108,33 @@ const Login = () => {
             <img src={Logo} alt="Logo" />
             <h1>WhisperWire</h1>
           </div>
-          <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} min="3" disabled={isFormDisabled}/>
-          <input type="password" placeholder='Password' name='password' onChange={(e) => handleChange(e)} disabled={isFormDisabled} />
-          <button type='submit' disabled={isFormDisabled} >Login</button>
-          <span>Don't  have an account? <Link to="/register">Register</Link>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            onChange={(e) => handleChange(e)}
+            min="3"
+            disabled={isFormDisabled}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={(e) => handleChange(e)}
+            disabled={isFormDisabled}
+          />
+          <button type="submit" disabled={isFormDisabled}>
+            Login
+          </button>
+          <span>
+            Don't have an account? <Link to="/register">Register</Link>
           </span>
         </form>
       </FormContainer>
       <ToastContainer />
     </>
   );
-}
+};
 
 const FormContainer = styled.div`
   height: 100vh;
@@ -187,4 +203,4 @@ const FormContainer = styled.div`
     }
   }
 `;
-export default Login
+export default Login;

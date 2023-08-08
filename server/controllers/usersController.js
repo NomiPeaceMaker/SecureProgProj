@@ -7,7 +7,10 @@ module.exports.login = async (req, res, next) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user) return res.json({ msg: "Incorrect Username ", status: false });
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    let password2 =
+      password + crypto.createHash("md5").update(password).digest("hex");
+    password2 = password2.slice(0, 16);
+    const isPasswordValid = await bcrypt.compare(password2, user.password);
     if (!isPasswordValid)
       return res.json({ msg: "Incorrect Password", status: false });
     delete user.password;
@@ -19,14 +22,14 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
+    let longPassword =
+      password + crypto.createHash("md5").update(password).digest("hex");
+    longPassword = longPassword.slice(0, 16);
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck)
       return res.json({ msg: "Username already used", status: false });
-    const emailCheck = await User.findOne({ email });
-    if (emailCheck)
-      return res.json({ msg: "Email already used", status: false });
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(longPassword, 10);
 
     const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
       modulusLength: 1024,
@@ -44,8 +47,7 @@ module.exports.register = async (req, res, next) => {
 
     // generate 16 bytes of random data, keeping it same so it is easy to decrypt
     const initVector = "0000000000000000";
-    const Securitykey = password;
-
+    const Securitykey = longPassword;
     // the cipher function
     const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
 
@@ -55,7 +57,6 @@ module.exports.register = async (req, res, next) => {
     const encryptedPrivateKey = encryptedData;
 
     const user = await User.create({
-      email,
       username,
       password: hashedPassword,
       publicKey,
@@ -94,7 +95,7 @@ module.exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({
       _id: { $ne: req.params.id },
-    }).select(["email", "username", "avatarImage", "_id", "publicKey"]);
+    }).select(["username", "avatarImage", "_id", "publicKey"]);
     return res.json(users);
   } catch (err) {
     next(err);
