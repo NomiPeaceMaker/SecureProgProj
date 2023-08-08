@@ -15,6 +15,10 @@ const Login = () => {
     password: ""
   });
 
+  const [loginAttempts, setLoginAttempts] = useState(3);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+
+
   const toastOptions = {
     position: 'bottom-right',
     autoClose: 8000,
@@ -27,7 +31,13 @@ const Login = () => {
     if(localStorage.getItem('chat-app-user')) {
       navigate('/');
     }
-  }, );
+
+    const storedLoginAttempts = localStorage.getItem('loginAttempts');
+    if (storedLoginAttempts !== null) {
+      setLoginAttempts(Number(storedLoginAttempts));
+    }
+
+  },);
   
 
   const handleSubmit = async (e) => {
@@ -40,12 +50,17 @@ const Login = () => {
     });
     if(data.status === false){
       toast.error(data.msg, toastOptions);
+
+      setLoginAttempts(loginAttempts-1);
+      localStorage.setItem('loginAttempts',loginAttempts -1 )
+
     } else {
       data.user = {... data.user, password}
       localStorage.setItem('chat-app-user', JSON.stringify(data.user));
     }
     navigate("/");
    };
+   
   };
 
   const handleChange = (e) => {
@@ -54,6 +69,12 @@ const Login = () => {
 
   const handleValidation = () =>{
     const {password, username} = values;
+
+    if (isFormDisabled) {
+      toast.error("You are currently locked out. Please wait and try again later.", toastOptions);
+      return false;
+    }
+
     if(password ===  ""){
       toast.error("Password required!", toastOptions);
       return false;
@@ -61,20 +82,35 @@ const Login = () => {
       toast.error("Username required", toastOptions);
       return false;
     } 
+
+    if (loginAttempts === 0) {
+      setIsFormDisabled(true)   
+      toast.error("You have reached the maximum number of login attempts and locked out for 5 minutes.", toastOptions);
+      setTimeout(timeoutHandler, 60000);
+      return false;
+    }
+
     return true;
     }
   
+    const timeoutHandler = () => {
+      console.log("ece")
+      setIsFormDisabled(false); // Unlock after timeout
+      localStorage.setItem('loginAttempts', 3);
+
+    };
+
   return (
     <>
       <FormContainer>
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="brand">
             <img src={Logo} alt="Logo" />
-            <h1>RChat</h1>
+            <h1>WhisperWire</h1>
           </div>
-          <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} min="3"/>
-          <input type="password" placeholder='Password' name='password' onChange={(e) => handleChange(e)} />
-          <button type='submit' >Login</button>
+          <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} min="3" disabled={isFormDisabled}/>
+          <input type="password" placeholder='Password' name='password' onChange={(e) => handleChange(e)} disabled={isFormDisabled} />
+          <button type='submit' disabled={isFormDisabled} >Login</button>
           <span>Don't  have an account? <Link to="/register">Register</Link>
           </span>
         </form>

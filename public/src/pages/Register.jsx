@@ -7,6 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios"
 import { registerRoute } from '../utils/APIRoutes';
 
+
+
+
+const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 const Register = () => {
   const navigate = useNavigate();
 
@@ -61,10 +65,15 @@ const Register = () => {
     } else if(username.length < 3){
       toast.error("Username must be atleast 3 characters.", toastOptions);
       return false;
-    } else if(password.length == 15 ){
-      toast.error("Password must be 16 characters.", toastOptions);
+    } else if(password.length >= 8 ){
+      toast.error("Password must be 8 characters.", toastOptions);
       return false;
-    } else  if(email === "") {
+    } 
+      else if (!passwordRegex.test(password)){
+      toast.error("Password must contain capital,small and spiecial letter,",toastOptions)
+      return false;
+    }
+      else  if(email === "") {
       toast.error("Email is required", toastOptions);
       return false;
     }
@@ -78,7 +87,7 @@ const Register = () => {
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="brand">
             <img src={Logo} alt="Logo" />
-            <h1>RChat</h1>
+            <h1>WhisperWire</h1>
           </div>
           <input type="text" placeholder='Username' name='username' onChange={(e) => handleChange(e)} />
           <input type="email" placeholder='Email' name='email' onChange={(e) => handleChange(e)} />
