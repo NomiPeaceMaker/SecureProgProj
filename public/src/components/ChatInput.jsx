@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import Picker from 'emoji-picker-react'
 import {IoMdSend} from 'react-icons/io'
 import {BsEmojiSmileFill} from 'react-icons/bs'
+import DOMPurify from 'dompurify';
+
 
 export default function ChatInput({handleSendMsg}) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -23,7 +25,8 @@ export default function ChatInput({handleSendMsg}) {
         if(msg.length>0){
             // Encrypt message before sending
             // Use receivers public key to encrypt
-            handleSendMsg(msg);
+            const sanitizedMsg = DOMPurify.sanitize(msg);
+            handleSendMsg(sanitizedMsg);
             setMsg('');
         }
     }

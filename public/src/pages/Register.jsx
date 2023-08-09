@@ -65,7 +65,7 @@ const Register = () => {
     } else if (username.length < 3) {
       toast.error("Username must be atleast 3 characters.", toastOptions);
       return false;
-    } else if (password.length >= 8) {
+    } else if (password.length < 8) {
       toast.error("Password must be 8 characters.", toastOptions);
       return false;
     } else if (!passwordRegex.test(password)) {
@@ -84,7 +84,7 @@ const Register = () => {
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="brand">
             <img src={Logo} alt="Logo" />
-            <h1>WhisperWire</h1>
+            <h1>Rchat</h1>
           </div>
           <input
             type="text"
