@@ -80,7 +80,7 @@ const Login = () => {
       toast.error("Username required", toastOptions);
       return false;
     }
-
+    // Lockout mechanism to ensure only 3 attempts and then a 5 minute cooldown period
     if (loginAttempts === 0) {
       setIsFormDisabled(true);
       toast.error(

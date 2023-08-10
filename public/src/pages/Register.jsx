@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
 
+// This handles the password complecity requiremnt
 const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 const Register = () => {
   const navigate = useNavigate();

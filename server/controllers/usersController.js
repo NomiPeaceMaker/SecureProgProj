@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
+// Logging in is handled by comparing Hash received by front-end and hash in the DB
 module.exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -20,6 +21,7 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
+// Funtion that handles crating RSA encrypted key pairs for new user
 module.exports.register = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -45,7 +47,8 @@ module.exports.register = async (req, res, next) => {
 
     const algorithm = "aes-128-cbc";
 
-    // generate 16 bytes of random data, keeping it same so it is easy to decrypt
+    // generate 16 bytes of random data, keeping it same so it is easy to decrypt.
+    // Does not make it too easy to decrypt even with an easy to guess init vector
     const initVector = "0000000000000000";
     const Securitykey = longPassword;
     // the cipher function
@@ -91,6 +94,7 @@ module.exports.setAvatar = async (req, res, next) => {
   }
 };
 
+// gets a list of all users from the DB
 module.exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({
@@ -102,6 +106,7 @@ module.exports.getAllUsers = async (req, res, next) => {
   }
 };
 
+// Logs user out by removing their token (id) from the backend memory
 module.exports.logOut = (req, res, next) => {
   try {
     if (!req.params.id) return res.json({ msg: "User id is required " });

@@ -1,5 +1,8 @@
 const messageModel = require("../models/messageModel");
 
+// Funtion that adds a message to the DB
+// All messages have bounds are set to prevent buffer overflow
+// All messages have encrypted text, and hence to injection attacks can occur
 module.exports.addMessage = async (req, res, next) => {
   try {
     const { from, to, message, keys } = req.body;
@@ -28,6 +31,7 @@ module.exports.addMessage = async (req, res, next) => {
     next(err);
   }
 };
+// Funtion that gets all the messages from the DB
 module.exports.getAllMessage = async (req, res, next) => {
   try {
     const { from, to } = req.body;
