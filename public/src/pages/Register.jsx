@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
 
+const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 const Register = () => {
   const navigate = useNavigate();
 
@@ -65,7 +66,13 @@ const Register = () => {
       toast.error("Username must be atleast 3 characters.", toastOptions);
       return false;
     } else if (password.length < 8) {
-      toast.error("Password must be >=8 characters.", toastOptions);
+      toast.error("Password must be 8 characters.", toastOptions);
+      return false;
+    } else if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must contain capital,small and spiecial letter,",
+        toastOptions
+      );
       return false;
     }
     return true;

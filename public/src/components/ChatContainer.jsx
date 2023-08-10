@@ -7,6 +7,7 @@ import { getAllMessagesRoute, sendMessageRoute } from "../utils/APIRoutes";
 import { v4 as uuidv4 } from "uuid";
 import { JSEncrypt } from "jsencrypt";
 import { AES, enc, pad, mode, MD5 } from "crypto-js";
+import DOMPurify from "dompurify";
 
 export default function ChatContainer({ currentChat, currentUser, socket }) {
   const [messages, setMessages] = useState([]);
@@ -176,7 +177,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
                     }`}
                   >
                     <div className="content ">
-                      <p>{message.message}</p>
+                      <p>{DOMPurify.sanitize(message.message)}</p>
                     </div>
                   </div>
                 </div>
