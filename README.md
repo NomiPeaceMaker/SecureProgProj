@@ -1,5 +1,5 @@
 # WhisperWire
-Realtime Chat App with end-to-end encryption, made by 
+Realtime Chat App with end-to-end encryption, made by Nauman Yawar Butt
 
 ## Features/Components
 - Uses React Js for UI
