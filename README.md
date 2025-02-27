@@ -18,3 +18,5 @@ Realtime Chat App with end-to-end encryption, made by Nauman Yawar Butt
 4. go to the "public" folder and run "npm i"
 5. run "npm start" in the server folder
 6. run "npm start" in the public folder
+
+Link to a video that shows how it works: https://www.youtube.com/watch?v=yLX35FI6Quw
